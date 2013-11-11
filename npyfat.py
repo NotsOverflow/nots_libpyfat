@@ -107,9 +107,12 @@ class PartitionBootSector:
 		return string
 		
 	def __getitem__(self, key):
-		for index, value in enumerate(self.buffer):
-			if ( value[0] ==  key) :
-				return value[1]
+		if type(key) == int:
+			return self.buffer[key][1]
+		else:
+			for index, value in enumerate(self.buffer):
+				if ( value[0] ==  key) :
+					return value[1]
 		raise("InvalidParam")
 		
 
