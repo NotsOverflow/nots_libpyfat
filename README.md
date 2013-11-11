@@ -1,4 +1,12 @@
 nots_libpyfat
 =============
 
-a fat filesystem library for teh sake of learning
+ yet an other fat filesystem library
+
+try:
+
+	./npyfat.py fat32.img
+
+todo :
+
+	fully working library for fat file system editing using python 
