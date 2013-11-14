@@ -1,12 +1,12 @@
-nots_libpyfat
+nots_pydisklib
 =============
 
- yet an other fat filesystem library
+ yet an other filesystem library
 
 try:
 
-	./npyfat.py fat32.img
+	./disktest.py fat32.img
 
 todo :
 
-	fully working library for fat file system editing using python 
+	fully working library for file systems using python 
