@@ -4,10 +4,10 @@
 SECTOR_SIZE = 512
 
 import sys
-from distools import *
-from disbuffer import *
-from dismbr import *
-from disdefine import *
+from dislib.distools import *
+from dislib.disbuffer import *
+from dislib.dismbr import *
+from dislib.disdefine import *
 
 
 
