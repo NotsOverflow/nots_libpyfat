@@ -28,6 +28,27 @@ class LoadBuffer:
 		
 		return self.buffer
 		
+	def backup_state(self):
+		
+		return (\
+					self.filename,\
+					self.sector_size,\
+					self.buffer,\
+					self.buff_size,\
+					self._counter,\
+					self.size\
+				)
+				
+	def restore_state(self,value):
+		
+					self.filename,\
+					self.sector_size,\
+					self.buffer,\
+					self.buff_size,\
+					self._counter,\
+					self.size\
+				= value
+		
 	def populate_buffer(self,bpos,scount):
 	
 		if scount < 1:

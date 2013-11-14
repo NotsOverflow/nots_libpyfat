@@ -3,8 +3,11 @@
 
 from array import *
 
-def ashex(s):
-	return ':'.join(x.encode('hex') for x in s)
+def ashex(s,reverse=0):
+	if reverse:
+		return ':'.join(x.encode('hex') for x in reversed(s))
+	else:
+		return ':'.join(x.encode('hex') for x in s)
 
 def ascii(x):
 	if 32 <= x <= 126:
