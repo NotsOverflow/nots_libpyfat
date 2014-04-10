@@ -11,8 +11,9 @@ from disdefine import *
 --------------------------------------------------------'''
 
 class LoadMbr:
-	def __init__(self, bufferObj, type_format="FAT"):
-	
+	def __init__(self, bufferObj, type_format="FAT", verb = VERBOSE):
+		global VERBOSE
+		VERBOSE = verb
 		if type_format != "FAT":
 			raise "UnsiportedFileFormat"
 			
@@ -27,7 +28,6 @@ class LoadMbr:
 		self.populate_calculations2()
 		self.load_fsinfo_sector()
 		self.load_backup()
-		
 		bufferObj.restore_state(bufferObj_bkp)
 			
 	def load_backup(self, prefix = ""):
@@ -39,7 +39,12 @@ class LoadMbr:
 		self.populate_calculations1(prefix + "bkp_")
 		self.populate_part_2(prefix + "bkp_")
 		self.populate_calculations2(prefix + "bkp_")
-		self.load_fsinfo_sector(prefix + "bkp_",bkp_pos+1)
+		#check if possible to get backuped fsinfo
+		#self.load_fsinfo_sector(prefix + "bkp_",bkp_pos+1)
+		if VERBOSE == True:
+			print("\n\tLoad Backup boot sector :\n")
+			print(self)
+			print("")
 	
 	def load_fsinfo_sector(self, prefix = "",fsi_pos = -1):
 		if self[prefix + "volume_type"] != "FAT32" :
@@ -60,13 +65,17 @@ class LoadMbr:
 			raise "BadFSInfoStructSignature"
 		if self[prefix + "fsi_boot_close"] != "aa:55:00:00":
 			raise "BadFSInfoBootClose"
+		if VERBOSE == True:
+			print("\n\tLoad Fsinfo :\n")
+			print(self)
+			print("")
 		
 	def populate_calculations2(self, prefix = ""):
 		if self[prefix + "boot_close"] != "aa:55":
 			raise "NoBootClose"
 		if self[prefix + "boot_signature"] != "29":
 			raise "WrongBootSignature"
-		if self[prefix + "volume_type"] is not "FAT32" :
+		if self[prefix + "volume_type"] == "FAT32" :
 			self[prefix + "root_dir_LBA"] = (\
 								  (\
 									self[prefix + "root_cluster"]\
@@ -81,6 +90,11 @@ class LoadMbr:
 							   self[prefix + "reserved_sector_count"]\
 							   + ( self[prefix + "num_fats"] * self[prefix + "fat_size"] )
 			self[prefix + "root_dir_cluster_nbr"] = 0
+			
+		if VERBOSE == True:
+			print("\n\tPopulate Calculation 1 :\n")
+			print(self)
+			print("")
 		
 	def populate_calculations1(self, prefix = ""):
 	
@@ -120,6 +134,10 @@ class LoadMbr:
 			self[prefix + "volume_type"] = "FAT32"
 			self[prefix + "fat_offset"] = 4	
 	
+		if VERBOSE == True:
+			print("\n\tPopulate Calculation 1 :\n")
+			print(self)
+			print("")
 		
 	
 	def populate_part_1(self,prefix = ""):
@@ -139,6 +157,10 @@ class LoadMbr:
 		self.buffer.append((prefix + "hidden_sectors", disutil.toInt(sector[28:32])))	
 		self.buffer.append((prefix + "total_sector_32", disutil.toInt(sector[32:36])))
 		self.buffer.append((prefix + "fat_size_32", disutil.toInt(sector[36:40])))
+		if VERBOSE == True:
+			print("\n\tPopulate part 1 :\n")
+			print(self)
+			print("")
 		
 
 	def populate_part_2(self,prefix = ""):
@@ -183,6 +205,11 @@ class LoadMbr:
 		self.buffer.append((prefix + "partition_4", disutil.ashex(disutil.make_string(sector[494:510]))))
 		
 		self.buffer.append((prefix + "boot_close", disutil.ashex(disutil.make_string(sector[510:512]),1)))
+		
+		if VERBOSE == True:
+			print("\n\tPopulate Part 2 :\n")
+			print(self)
+			print("")
 
 	def __repr__(self):
 		string = ""
@@ -203,9 +230,9 @@ class LoadMbr:
 		if type(key) == int:
 			if type(value) == tuple:
 				self.buffer[key] = value
-				return self.buffer[key]
+				return self.buffer[key][1]
 			else:
-				self.buffer[key][1] = value
+				self.buffer[key] = ( key,value )
 				return self.buffer[key][1]
 		elif type(key) == str:
 			for index, content in enumerate(self.buffer):
@@ -214,12 +241,12 @@ class LoadMbr:
 						self.buffer[index] = value
 						return self.buffer[index]
 					else:
-						self.buffer[index][1] = value
+						self.buffer[index] = ( key,value )
 						return self.buffer[index][1]
-				if type(value) == tuple:
-					return self.buffer.append(value)
-				else:
-					return self.buffer.append((key, value))
+			if type(value) == tuple:
+				return self.buffer.append(value)
+			else:
+				return self.buffer.append((key, value))
 				
 			raise("KeyNotFound")
 		else:

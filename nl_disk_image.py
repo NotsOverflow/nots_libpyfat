@@ -13,11 +13,10 @@ from dislib.disdefine import *
 
 class DiskImage:
 	def __init__(self, filename, type_img="FAT"):
-	
 		self.filename = filename
-		self.buffer = LoadBuffer(filename)
-		self.boot = LoadMbr(self.buffer,type_img)
-		self.tools = LoadTools(self.buffer,self.boot)
+		self.buffer = LoadBuffer(filename, verb=VERBOSE)
+		self.boot = LoadMbr(self.buffer,type_img, verb=VERBOSE)
+		self.tools = LoadTools(self.buffer,self.boot, verb=VERBOSE)
 		
 		
 	def __repr__(self):

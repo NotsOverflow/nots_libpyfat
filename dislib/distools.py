@@ -4,7 +4,9 @@
 from disdefine import *
 
 class LoadTools:
-	def __init__(self,bufferObj,bootObj):
+	def __init__(self,bufferObj,bootObj, verb=VERBOSE):
+		global VERBOSE
+		VERBOSE = verb
 		self.bootObj = bootObj
 		self.bufferObj = bufferObj
 

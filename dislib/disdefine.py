@@ -2,3 +2,4 @@
 # -*- coding: utf-8 -*- 
 
 SECTOR_SIZE = 512
+VERBOSE = False

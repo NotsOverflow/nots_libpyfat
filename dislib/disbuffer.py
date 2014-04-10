@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 from disdefine import *
-import os
+import os, copy
 
 '''
 
@@ -12,7 +12,9 @@ import os
 
 class LoadBuffer:
 
-	def __init__(self, filename, to_pos=0, from_pos=0, sector_size=SECTOR_SIZE):
+	def __init__(self, filename, to_pos=0, from_pos=0, sector_size=SECTOR_SIZE, verb=VERBOSE):
+		global VERBOSE
+		VERBOSE = verb
 	
 		self.filename = filename
 		self.sector_size = sector_size
@@ -30,7 +32,7 @@ class LoadBuffer:
 		
 	def backup_state(self):
 		
-		return (\
+		tmptuple = (\
 					self.filename,\
 					self.sector_size,\
 					self.buffer,\
@@ -38,6 +40,8 @@ class LoadBuffer:
 					self._counter,\
 					self.size\
 				)
+		dcopy = copy.deepcopy(tmptuple)
+		return dcopy
 				
 	def restore_state(self,value):
 		
